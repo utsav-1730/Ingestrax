@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-beglz-dev-281a2-authRole",
+      "UnauthRoleArn": "arn:aws:iam::014498624696:role/amplify-beglz-dev-281a2-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::014498624696:role/amplify-beglz-dev-281a2-authRole",
+      "Region": "ca-central-1",
+      "DeploymentBucketName": "amplify-beglz-dev-281a2-deployment",
+      "UnauthRoleName": "amplify-beglz-dev-281a2-unauthRole",
+      "StackName": "amplify-beglz-dev-281a2",
+      "StackId": "arn:aws:cloudformation:ca-central-1:014498624696:stack/amplify-beglz-dev-281a2/05060a70-7c4e-11ef-b3d1-0ef260261bed",
+      "AmplifyAppId": "d3li1ves3y2jz2"
+    },
+    "categories": {
+      "auth": {
+        "beglzee5e1095": {}
+      }
+    }
+  }
+}
