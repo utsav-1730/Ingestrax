@@ -8,6 +8,8 @@ import LoginScreen from './components/LoginScreen';
 import SignupScreen from './components/SignupScreen';
 import VerificationScreen from './components/VerificationScreen';
 import MainScreen from './components/MainScreen';
+import ForgotPasswordScreen from './components/ForgotPasswordscreen';
+
 
 Amplify.configure(awsconfig);
 
@@ -16,11 +18,15 @@ const Stack = createStackNavigator();
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator 
+        initialRouteName="Login"
+        screenOptions={{ headerShown: false }} // This will hide the header for all screens
+      >
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Signup" component={SignupScreen} />
         <Stack.Screen name="Verification" component={VerificationScreen} />
         <Stack.Screen name="Main" component={MainScreen} />
+        <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -55,42 +55,54 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    backgroundColor: '#FFEDDB', // Match the background color with the rest of the app
   },
   title: {
-    fontSize: 24,
+    fontSize: 28, // Larger font for title consistency
+    fontWeight: 'bold',
+    color: '#2C3E50', // Darker color for emphasis
     marginBottom: 10,
   },
   subtitle: {
     fontSize: 16,
     marginBottom: 20,
+    color: '#2C3E50', // Same dark color for consistency
     textAlign: 'center',
   },
   input: {
     width: '100%',
-    height: 40,
-    borderColor: 'gray',
+    height: 50,
+    borderColor: '#B0BEC5', // Lighter border color
     borderWidth: 1,
-    marginBottom: 20,
-    paddingHorizontal: 10,
+    marginBottom: 15,
+    paddingHorizontal: 15,
+    borderRadius: 10, // Rounded corners
+    backgroundColor: '#FFFFFF',
+    fontSize: 16,
+    elevation: 2, // Subtle shadow for the input
   },
   button: {
-    backgroundColor: '#3498db',
-    padding: 10,
-    borderRadius: 5,
+    backgroundColor: '#F27A1A', // Consistent button color
+    padding: 15,
+    borderRadius: 10, // Rounded corners
     width: '100%',
     alignItems: 'center',
+    elevation: 5, // Shadow for button depth
   },
   buttonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   resendButton: {
     marginTop: 20,
   },
   resendButtonText: {
-    color: '#3498db',
+    color: '#F27A1A', // Same color for consistency across the app
     fontSize: 16,
+    fontWeight: 'bold',
   },
 });
+
 
 export default VerificationScreen;
