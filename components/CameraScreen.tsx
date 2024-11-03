@@ -1,5 +1,6 @@
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
+import * as ImageManipulator from 'expo-image-manipulator';
 import { useState, useRef } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, Image, TextInput, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -62,16 +63,24 @@ export default function App() {
 
   async function sendData() {
     if (capturedImage) {
-      console.log("Captured Image Base64:", capturedImage.base64);
-      console.log("Text Prompt:", textPrompt);
       try {
+        // Compress the image
+        const compressedImage = await ImageManipulator.manipulateAsync(
+          capturedImage.uri,
+          [],
+          { compress: 0, format: ImageManipulator.SaveFormat.JPEG, base64: true }
+        );
+
+        console.log("Compressed Image Base64:", compressedImage.base64);
+        console.log("Text Prompt:", textPrompt);
+
         const response = await fetch(apiUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            image_data_base64: capturedImage.base64,
+            image_data_base64: compressedImage.base64,
             text: textPrompt || ''
           })
         });
