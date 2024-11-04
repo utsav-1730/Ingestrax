@@ -107,10 +107,11 @@ const MainScreen = ({ navigation }) => {
           <Text style={[styles.tabText, styles.activeTabText]}>Home</Text>
         </TouchableOpacity>
         
-        <TouchableOpacity style={styles.tabButton}>
+        <TouchableOpacity style={styles.tabButton} onPress={() => navigation.navigate('Explore')}>
           <Ionicons name="compass" size={24} color="#666" />
           <Text style={styles.tabText}>Explore</Text>
         </TouchableOpacity>
+
 
         <TouchableOpacity style={styles.tabButton} onPress={navigateToCamera}>
           <Ionicons name="scan" size={24} color="#666" />

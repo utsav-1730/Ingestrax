@@ -8,6 +8,7 @@ import LoginScreen from './components/LoginScreen';
 import SignupScreen from './components/SignupScreen';
 import VerificationScreen from './components/VerificationScreen';
 import MainScreen from './components/MainScreen';
+import ExploreScreen from './components/ExploreScreen';
 import ForgotPasswordScreen from './components/ForgotPasswordscreen';
 
 
@@ -28,6 +29,7 @@ const App = () => {
         <Stack.Screen name="Main" component={MainScreen} />
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
         <Stack.Screen name="Camera" component={Camera} />
+        <Stack.Screen name="Explore" component={ExploreScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
