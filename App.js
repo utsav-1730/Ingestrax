@@ -9,7 +9,10 @@ import SignupScreen from './components/SignupScreen';
 import VerificationScreen from './components/VerificationScreen';
 import MainScreen from './components/MainScreen';
 import ExploreScreen from './components/ExploreScreen';
+import ProfileScreen from './components/ProfileScreen';
+import EditProfileScreen from './components/EditProfileScreen';
 import ForgotPasswordScreen from './components/ForgotPasswordscreen';
+import SettingsScreen from './components/SettingsScreen';
 
 
 Amplify.configure(awsconfig);
@@ -30,6 +33,9 @@ const App = () => {
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
         <Stack.Screen name="Camera" component={Camera} />
         <Stack.Screen name="Explore" component={ExploreScreen} />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+        <Stack.Screen name="Settings" component={SettingsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

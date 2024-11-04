@@ -118,10 +118,11 @@ const MainScreen = ({ navigation }) => {
           <Text style={styles.tabText}>Scan</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.tabButton}>
-          <Ionicons name="person" size={24} color="#666" />
-          <Text style={styles.tabText}>Profile</Text>
+        <TouchableOpacity style={styles.tabButton} onPress={() => navigation.navigate('Profile')}>
+           <Ionicons name="person" size={24} color="#666" />
+           <Text style={styles.tabText}>Profile</Text>
         </TouchableOpacity>
+
       </View>
     </SafeAreaView>
   );
