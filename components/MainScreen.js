@@ -1,42 +1,79 @@
+// MainScreen.js
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Platform, SafeAreaView, ScrollView, Image } from 'react-native';
-import { Auth } from 'aws-amplify';
+import { View, Text, StyleSheet, TouchableOpacity, Platform, SafeAreaView, ScrollView, Image, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Camera } from './CameraScreen';
-import LoginScreen from './LoginScreen';
+import { FAB } from 'react-native-paper';
+
+const { width } = Dimensions.get('window');
 
 const MainScreen = ({ navigation }) => {
-  const handleSignOut = async () => {
-    try {
-      await Auth.signOut();
-      navigation.navigate('Login');
-    } catch (error) {
-      console.log('Error signing out: ', error);
-    }
+  
+  // Navigation functions
+  const navigateToStoryCreation = () => {
+    navigation.navigate('StoryCreation'); // Ensure you have a StoryCreation component
   };
 
-  const navigateToCamera = () => {
-    navigation.navigate('Camera');
+  const navigateToStoryViewer = (index) => {
+    navigation.navigate('StoryViewer', { stories: sampleStories, initialIndex: index });
   };
 
-  // Sample post data - you can replace this with real data
+  const navigateToLikes = (postId) => {
+    navigation.navigate('Likes', { postId });
+  };
+
+  const navigateToComments = (postId) => {
+    navigation.navigate('Comments', { postId });
+  };
+
+  const navigateToShareSheet = (postId) => {
+    navigation.navigate('ShareSheet', { postId });
+  };
+
+  const navigateToCreatePost = () => {
+    navigation.navigate('CreatePost'); // Ensure you have a CreatePost component
+  };
+
+  // Sample data for stories and posts
+  const sampleStories = [
+    {
+      id: 1,
+      type: 'image',
+      contentUrl: 'https://via.placeholder.com/300x400',
+      user: {
+        username: 'Alex',
+        avatar: 'https://via.placeholder.com/100x100',
+      },
+    },
+    {
+      id: 2,
+      type: 'video',
+      contentUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+      user: {
+        username: 'Maria',
+        avatar: 'https://via.placeholder.com/100x100',
+      },
+    },
+  ];
+
   const samplePosts = [
     {
       id: 1,
       username: 'Sarah',
-      imageUrl: 'https://placeholder.com/300x400',
+      userAvatar: 'https://via.placeholder.com/100x100',
+      imageUrl: 'https://via.placeholder.com/300x400',
       likes: 234,
       caption: 'Beautiful day! ✨',
-      timeAgo: '2h ago'
+      timeAgo: '2h ago',
     },
     {
       id: 2,
       username: 'Mike',
-      imageUrl: 'https://placeholder.com/300x400',
+      userAvatar: 'https://via.placeholder.com/100x100',
+      imageUrl: 'https://via.placeholder.com/300x400',
       likes: 156,
       caption: 'Perfect evening for a walk 🌅',
-      timeAgo: '4h ago'
-    }
+      timeAgo: '4h ago',
+    },
   ];
 
   return (
@@ -44,30 +81,31 @@ const MainScreen = ({ navigation }) => {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerText}>BEGLZ</Text>
-        <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
-          <Ionicons name="log-out-outline" size={20} color="white" />
-        </TouchableOpacity>
       </View>
 
       {/* Main Content - Feed */}
       <ScrollView style={styles.feedContainer}>
+        {/* Stories */}
         <View style={styles.storiesContainer}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.storiesScroll}>
             {/* Add Story Button */}
-            <TouchableOpacity style={styles.addStoryButton}>
+            <TouchableOpacity style={styles.addStoryButton} onPress={navigateToStoryCreation}>
               <View style={styles.addStoryIcon}>
                 <Ionicons name="add" size={24} color="#F27A1A" />
               </View>
               <Text style={styles.storyText}>Your Story</Text>
             </TouchableOpacity>
             {/* Sample Story Circles */}
-            {['Alex', 'Maria', 'John', 'Emma'].map((name, index) => (
-              <View key={index} style={styles.storyCircle}>
+            {sampleStories.map((story, index) => (
+              <TouchableOpacity key={story.id} style={styles.storyCircle} onPress={() => navigateToStoryViewer(index)}>
                 <View style={styles.storyRing}>
-                  <View style={styles.storyImage} />
+                  {story.type === 'video' ? (
+                    <Ionicons name="play-circle-outline" size={36} color="#fff" style={styles.storyOverlayIcon} />
+                  ) : null}
+                  <Image source={{ uri: story.user.avatar }} style={styles.storyImage} />
                 </View>
-                <Text style={styles.storyText}>{name}</Text>
-              </View>
+                <Text style={styles.storyText}>{story.user.username}</Text>
+              </TouchableOpacity>
             ))}
           </ScrollView>
         </View>
@@ -76,22 +114,34 @@ const MainScreen = ({ navigation }) => {
         {samplePosts.map((post) => (
           <View key={post.id} style={styles.postContainer}>
             <View style={styles.postHeader}>
-              <View style={styles.userInfo}>
-                <View style={styles.userAvatar} />
-                <Text style={styles.username}>{post.username}</Text>
-              </View>
-              <Ionicons name="ellipsis-horizontal" size={20} color="#666" />
+              <TouchableOpacity onPress={() => navigation.navigate('Profile', { userId: post.id })}>
+                <Image source={{ uri: post.userAvatar }} style={styles.userAvatar} />
+              </TouchableOpacity>
+              <Text style={styles.username}>{post.username}</Text>
+              <Ionicons name="ellipsis-horizontal" size={20} color="#666" style={{ marginLeft: 'auto' }} />
             </View>
-            <View style={styles.postImage} />
+            <TouchableOpacity onPress={() => navigateToStoryViewer(0)}>
+              <Image source={{ uri: post.imageUrl }} style={styles.postImage} />
+            </TouchableOpacity>
             <View style={styles.postActions}>
               <View style={styles.leftActions}>
-                <Ionicons name="heart-outline" size={24} color="#666" style={styles.actionIcon} />
-                <Ionicons name="chatbubble-outline" size={22} color="#666" style={styles.actionIcon} />
-                <Ionicons name="paper-plane-outline" size={22} color="#666" style={styles.actionIcon} />
+                <TouchableOpacity onPress={() => {/* Like functionality placeholder */}}>
+                  <Ionicons name="heart-outline" size={24} color="#666" style={styles.actionIcon} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigateToComments(post.id)}>
+                  <Ionicons name="chatbubble-outline" size={22} color="#666" style={styles.actionIcon} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigateToShareSheet(post.id)}>
+                  <Ionicons name="paper-plane-outline" size={22} color="#666" style={styles.actionIcon} />
+                </TouchableOpacity>
               </View>
-              <Ionicons name="bookmark-outline" size={22} color="#666" />
+              <TouchableOpacity onPress={() => {/* Bookmark functionality placeholder */}}>
+                <Ionicons name="bookmark-outline" size={22} color="#666" />
+              </TouchableOpacity>
             </View>
-            <Text style={styles.likes}>{post.likes} likes</Text>
+            <TouchableOpacity onPress={() => navigateToLikes(post.id)}>
+              <Text style={styles.likes}>{post.likes} likes</Text>
+            </TouchableOpacity>
             <Text style={styles.caption}>
               <Text style={styles.username}>{post.username}</Text> {post.caption}
             </Text>
@@ -100,30 +150,14 @@ const MainScreen = ({ navigation }) => {
         ))}
       </ScrollView>
 
-      {/* Task Bar */}
-      <View style={styles.taskBar}>
-        <TouchableOpacity style={styles.tabButton}>
-          <Ionicons name="home" size={24} color="#F27A1A" />
-          <Text style={[styles.tabText, styles.activeTabText]}>Home</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.tabButton} onPress={() => navigation.navigate('Explore')}>
-          <Ionicons name="compass" size={24} color="#666" />
-          <Text style={styles.tabText}>Explore</Text>
-        </TouchableOpacity>
-
-
-        <TouchableOpacity style={styles.tabButton} onPress={navigateToCamera}>
-          <Ionicons name="scan" size={24} color="#666" />
-          <Text style={styles.tabText}>Scan</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.tabButton} onPress={() => navigation.navigate('Profile')}>
-           <Ionicons name="person" size={24} color="#666" />
-           <Text style={styles.tabText}>Profile</Text>
-        </TouchableOpacity>
-
-      </View>
+      {/* Floating Action Button */}
+      <FAB
+        style={styles.fab}
+        small={false}
+        icon="plus"
+        onPress={navigateToCreatePost}
+        color="#fff"
+      />
     </SafeAreaView>
   );
 };
@@ -135,7 +169,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingTop: Platform.OS === 'android' ? 40 : 10,
@@ -148,11 +182,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: '#F27A1A',
-  },
-  signOutButton: {
-    backgroundColor: '#F27A1A',
-    padding: 8,
-    borderRadius: 20,
   },
   feedContainer: {
     flex: 1,
@@ -191,6 +220,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#F27A1A',
     padding: 2,
     marginBottom: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  storyOverlayIcon: {
+    position: 'absolute',
   },
   storyImage: {
     width: '100%',
@@ -208,13 +242,8 @@ const styles = StyleSheet.create({
   postHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     paddingHorizontal: 15,
     paddingVertical: 10,
-  },
-  userInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
   },
   userAvatar: {
     width: 32,
@@ -249,37 +278,25 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     paddingHorizontal: 15,
     marginBottom: 5,
+    color: '#262626',
   },
   caption: {
     paddingHorizontal: 15,
     marginBottom: 5,
+    color: '#262626',
   },
   timeAgo: {
     fontSize: 12,
     color: '#666',
     paddingHorizontal: 15,
+    marginBottom: 10,
   },
-  taskBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    paddingVertical: 10,
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
-    paddingBottom: Platform.OS === 'ios' ? 25 : 15,
-  },
-  tabButton: {
-    alignItems: 'center',
-    
-  },
-  tabText: {
-    fontSize: 12,
-    marginTop: 4,
-    color: '#666',
-  },
-  activeTabText: {
-    color: '#F27A1A',
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 20,
+    backgroundColor: '#F27A1A',
   },
 });
 

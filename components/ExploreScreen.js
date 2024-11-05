@@ -1,5 +1,3 @@
-// ExploreScreen.js
-
 import React, { useState } from 'react';
 import {
   View,
@@ -15,24 +13,12 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 
 const ExploreScreen = ({ navigation }) => {
-  // State variables for search query and selected filters
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilters, setSelectedFilters] = useState([]);
 
-  // Sample data for demonstration purposes
-  // TODO: Replace with data fetched from your backend
   const trendingRecipes = [
-    {
-      id: 1,
-      name: 'Healthy Salad 🥗',
-      imageUrl: 'https://via.placeholder.com/150',
-    },
-    {
-      id: 2,
-      name: 'Vegan Smoothie 🥤',
-      imageUrl: 'https://via.placeholder.com/150',
-    },
-    // Add more recipes as needed
+    { id: 1, name: 'Healthy Salad 🥗', imageUrl: 'https://via.placeholder.com/150' },
+    { id: 2, name: 'Vegan Smoothie 🥤', imageUrl: 'https://via.placeholder.com/150' },
   ];
 
   const trendingHashtags = ['#Healthy', '#Vegan', '#LowCarb', '#ProteinRich'];
@@ -40,32 +26,23 @@ const ExploreScreen = ({ navigation }) => {
   const topUsers = [
     { id: 1, username: 'HealthGuru', healthScore: 95, level: 'Gold 🥇' },
     { id: 2, username: 'FitLife', healthScore: 90, level: 'Silver 🥈' },
-    // Add more users as needed
   ];
 
-  // Function to handle search functionality
   const handleSearch = () => {
-    // TODO: Implement search functionality with backend
     console.log('Searching for:', searchQuery);
   };
 
-  // Function to navigate to the Recipe Detail screen
   const navigateToRecipe = (recipeId) => {
-    // TODO: Implement navigation to RecipeDetail screen
-    // navigation.navigate('RecipeDetail', { id: recipeId });
     console.log('Navigating to recipe with ID:', recipeId);
   };
 
-  // Function to navigate to the User Profile screen
   const navigateToUserProfile = (userId) => {
-    // TODO: Implement navigation to UserProfile screen
-    // navigation.navigate('UserProfile', { id: userId });
     console.log('Navigating to user profile with ID:', userId);
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
+      {/* Custom Header */}
       <View style={styles.header}>
         <Text style={styles.headerText}>Explore</Text>
       </View>
@@ -100,7 +77,6 @@ const ExploreScreen = ({ navigation }) => {
                 selectedFilters.includes(filter.label) && styles.filterButtonActive,
               ]}
               onPress={() => {
-                // Toggle filter selection
                 setSelectedFilters((prevFilters) =>
                   prevFilters.includes(filter.label)
                     ? prevFilters.filter((f) => f !== filter.label)
@@ -158,15 +134,10 @@ const ExploreScreen = ({ navigation }) => {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>🏆 Top 100 Users</Text>
-            <TouchableOpacity
-              onPress={() => {
-                // TODO: Navigate to full list of top users
-              }}
-            >
+            <TouchableOpacity>
               <Text style={styles.viewAllText}>View All</Text>
             </TouchableOpacity>
           </View>
-          {/* Display top users (limiting to top 5 for brevity) */}
           {topUsers.slice(0, 5).map((user, index) => (
             <TouchableOpacity
               key={user.id}
@@ -176,7 +147,6 @@ const ExploreScreen = ({ navigation }) => {
             >
               <View style={styles.userInfo}>
                 <View style={styles.userAvatar}>
-                  {/* You can replace this with user's avatar */}
                   <Text style={styles.userRank}>{index + 1}</Text>
                 </View>
                 <View>
@@ -189,41 +159,16 @@ const ExploreScreen = ({ navigation }) => {
           ))}
         </View>
       </ScrollView>
-
-      {/* Task Bar */}
-      <View style={styles.taskBar}>
-        <TouchableOpacity style={styles.tabButton} onPress={() => navigation.navigate('Main')}>
-          <Ionicons name="home" size={24} color="#666" />
-          <Text style={styles.tabText}>Home</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.tabButton}>
-          <Ionicons name="compass" size={24} color="#F27A1A" />
-          <Text style={[styles.tabText, styles.activeTabText]}>Explore</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.tabButton} onPress={() => navigation.navigate('Camera')}>
-          <Ionicons name="scan" size={24} color="#666" />
-          <Text style={styles.tabText}>Scan</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.tabButton} onPress={() => navigation.navigate('Profile')}>
-          <Ionicons name="person" size={24} color="#666" />
-          <Text style={styles.tabText}>Profile</Text>
-        </TouchableOpacity>
-      </View>
     </SafeAreaView>
   );
 };
 
-// Styles for the ExploreScreen component
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
   },
   header: {
-    // Header styling
     paddingTop: Platform.OS === 'android' ? 40 : 10,
     paddingBottom: 10,
     alignItems: 'center',
@@ -232,13 +177,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   headerText: {
-    // Header text styling
     fontSize: 26,
     fontWeight: 'bold',
     color: '#F27A1A',
   },
   searchContainer: {
-    // Search bar container styling
     flexDirection: 'row',
     alignItems: 'center',
     marginHorizontal: 20,
@@ -249,21 +192,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#f2f2f2',
   },
   searchIcon: {
-    // Search icon styling
     marginRight: 10,
   },
   searchInput: {
-    // Search input field styling
     flex: 1,
     height: 40,
     fontSize: 16,
   },
   filtersContainer: {
-    // Filters container styling
     paddingVertical: 10,
   },
   filterButton: {
-    // Filter button styling
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 6,
@@ -274,7 +213,6 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   filterButtonActive: {
-    // Active filter button styling
     backgroundColor: '#F27A1A',
     shadowColor: '#F27A1A',
     shadowOffset: { width: 0, height: 2 },
@@ -283,24 +221,19 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   filterButtonText: {
-    // Filter button text styling
     fontSize: 14,
     color: '#666',
   },
   filterButtonTextActive: {
-    // Active filter button text styling
     color: '#fff',
   },
   mainContent: {
-    // Main content styling
     flex: 1,
   },
   section: {
-    // Section styling
     marginVertical: 15,
   },
   sectionHeader: {
-    // Section header styling
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -308,18 +241,16 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   sectionTitle: {
-    // Section title styling
     fontSize: 20,
     fontWeight: 'bold',
     color: '#333',
+    paddingHorizontal: 20,
   },
   viewAllText: {
-    // 'View All' text styling
     color: '#F27A1A',
     fontSize: 14,
   },
   recipeCard: {
-    // Recipe card styling
     width: 160,
     marginLeft: 20,
     marginRight: 10,
@@ -333,26 +264,22 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   recipeImage: {
-    // Recipe image styling
     width: '100%',
     height: 120,
     backgroundColor: '#ddd',
   },
   recipeName: {
-    // Recipe name text styling
     margin: 10,
     fontSize: 16,
     fontWeight: 'bold',
     color: '#262626',
   },
   hashtagsContainer: {
-    // Hashtags container styling
     flexDirection: 'row',
     flexWrap: 'wrap',
     paddingHorizontal: 20,
   },
   hashtagButton: {
-    // Hashtag button styling
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 15,
@@ -361,12 +288,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   hashtagText: {
-    // Hashtag text styling
     fontSize: 14,
     color: '#666',
   },
   userCard: {
-    // User card styling
     paddingHorizontal: 20,
     paddingVertical: 15,
     borderBottomWidth: 1,
@@ -376,12 +301,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   userInfo: {
-    // User info styling
     flexDirection: 'row',
     alignItems: 'center',
   },
   userAvatar: {
-    // User avatar styling
     width: 50,
     height: 50,
     borderRadius: 25,
@@ -391,53 +314,24 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   userRank: {
-    // User rank text styling
     fontSize: 18,
     fontWeight: 'bold',
     color: '#fff',
   },
   username: {
-    // Username text styling
     fontSize: 16,
     fontWeight: 'bold',
     color: '#333',
   },
   userLevel: {
-    // User level styling
     fontSize: 14,
     color: '#F27A1A',
     marginTop: 2,
   },
   healthScore: {
-    // Health score text styling
     fontSize: 14,
     color: '#666',
-  },
-  taskBar: {
-    // Task bar styling
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    paddingVertical: 10,
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
-    paddingBottom: Platform.OS === 'ios' ? 25 : 15,
-  },
-  tabButton: {
-    // Tab button styling
-    alignItems: 'center',
-  },
-  tabText: {
-    // Tab text styling
-    fontSize: 12,
-    marginTop: 4,
-    color: '#666',
-  },
-  activeTabText: {
-    // Active tab text styling
-    color: '#F27A1A',
-  },
+  }
 });
 
 export default ExploreScreen;

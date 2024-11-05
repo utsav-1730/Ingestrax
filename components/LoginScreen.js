@@ -9,7 +9,7 @@ const LoginScreen = ({ navigation }) => {
   const handleLogin = async () => {
     try {
       await Auth.signIn(email, password);
-      navigation.navigate('Main');
+      navigation.navigate('MainTabs');
     } catch (error) {
       console.log('Error signing in:', error);
       Alert.alert('Error', error.message || 'An error occurred while signing in.');
