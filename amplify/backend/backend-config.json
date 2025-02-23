@@ -1,6 +1,6 @@
 {
   "auth": {
-    "beglzee5e1095": {
+    "vitae135f94454": {
       "customAuth": false,
       "dependsOn": [],
       "frontendAuthConfig": {
@@ -16,9 +16,7 @@
           "EMAIL"
         ],
         "socialProviders": [],
-        "usernameAttributes": [
-          "EMAIL"
-        ],
+        "usernameAttributes": [],
         "verificationMechanisms": [
           "EMAIL"
         ]

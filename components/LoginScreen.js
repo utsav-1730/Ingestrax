@@ -1,5 +1,18 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  TouchableWithoutFeedback,
+  Keyboard
+} from 'react-native';
 import { Auth } from 'aws-amplify';
 
 const LoginScreen = ({ navigation }) => {
@@ -9,7 +22,7 @@ const LoginScreen = ({ navigation }) => {
   const handleLogin = async () => {
     try {
       await Auth.signIn(email, password);
-      navigation.navigate('MainTabs');
+      navigation.replace('MainScreen');
     } catch (error) {
       console.log('Error signing in:', error);
       Alert.alert('Error', error.message || 'An error occurred while signing in.');
@@ -17,106 +30,155 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      {/* Logo */}
-      <Image source={require('../assets/logo.png')} style={styles.logo} />
-      {/* Rotated Text */}
-      <View style={styles.rotatedTextContainer}>
-        <Text style={styles.rotatedText}>B  E  G  L  Z</Text>
-      </View>
+    <KeyboardAvoidingView 
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView 
+          contentContainerStyle={styles.scrollContainer} 
+          keyboardShouldPersistTaps="handled"
+        >
+          {/* Logo */}
+          <Image source={require('../assets/logo.png')} style={styles.logo} />
 
-      {/* Sign In Form */}
-      <TextInput
-        style={styles.input}
-        placeholder="Enter your Username or Email"
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Enter your Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Sign in</Text>
-      </TouchableOpacity>
+          {/* Heading */}
+          <Text style={styles.heading}>Log in</Text>
+          <Text style={styles.subHeading}>Let’s sign up to your account and start Health Insights at your Insights</Text>
 
-      {/* Footer Text */}
-      <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
-        <Text style={styles.forgotText}>Forgot Password?</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-        <Text style={styles.signupText}>Create Account</Text>
-      </TouchableOpacity>
-    </View>
+          {/* Input Fields */}
+          <TextInput
+            style={styles.input}
+            placeholder="Enter your Email"
+            value={email}
+            onChangeText={setEmail}
+            autoCapitalize="none"
+            keyboardType="email-address"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
+
+          {/* Forgot Password */}
+          <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+            <Text style={styles.forgotPassword}>Forgot password?</Text>
+          </TouchableOpacity>
+
+          {/* Sign In Button */}
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
+            <Text style={styles.buttonText}>Sign IN</Text>
+          </TouchableOpacity>
+
+          {/* OR Divider */}
+          <View style={styles.dividerContainer}>
+            <View style={styles.divider} />
+            <Text style={styles.orText}>or</Text>
+            <View style={styles.divider} />
+          </View>
+
+          {/* Sign Up Link */}
+          <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+            <Text style={styles.signupText}>
+              Don’t have an account? <Text style={styles.signupLink}>Sign Up</Text>
+            </Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  scrollContainer: {
+    flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#FFEDDB', // Light, clean background color
   },
   logo: {
-    width: 200, // Adjust size to your needs
-    height: 100,
-    marginBottom: 20,
-    justifyContent: 'center',
-  },
-  rotatedTextContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '60%',
+    width: 150,
+    height: 150,
     marginBottom: 30,
   },
-  rotatedText: {
-    fontSize: 20,
-    color: '#F27A1A',
-    justifyContent: 'center',
+  heading: {
+    fontSize: 29,
+    fontWeight: 'bold',
+    color: '#208F8F',
+    marginBottom: 10,
+  },
+  subHeading: {
+    fontSize: 14,
+    color: '#7C7C7C',
+    textAlign: 'center',
+    marginBottom: 20,
   },
   input: {
     width: '100%',
     height: 50,
-    borderColor: '#B0BEC5', // Lighter border color for a polished look
+    borderColor: '#D1D1D1',
     borderWidth: 1,
-    marginBottom: 15, // Spacing between inputs
+    marginBottom: 15,
     paddingHorizontal: 15,
-    borderRadius: 10,
-    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    backgroundColor: '#F9F9F9',
     fontSize: 16,
-    elevation: 2, // Subtle shadow for input fields
+  },
+  forgotPassword: {
+    color: '#00A3FF',
+    fontSize: 14,
+    alignSelf: 'flex-end',
+    marginBottom: 20,
   },
   button: {
-    backgroundColor: '#F27A1A', // Keep the orange button color
+    backgroundColor: '#5FD6D3',
     padding: 15,
     borderRadius: 10,
     width: '100%',
     alignItems: 'center',
-    elevation: 5, // Add shadow for a polished button feel
-    marginTop: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 5,
   },
   buttonText: {
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
   },
-  forgotText: {
-    marginTop: 20,
-    color: '#F27A1A',
-    fontSize: 16, // Match font size consistency
+  dividerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 20,
+    width: '100%',
+  },
+  divider: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#D1D1D1',
+  },
+  orText: {
+    marginHorizontal: 10,
+    color: '#7C7C7C',
+    fontSize: 14,
   },
   signupText: {
-    marginTop: 20,
-    color: '#F27A1A',
-    fontSize: 16, // Match font size consistency
+    fontSize: 14,
+    color: '#7C7C7C',
+    marginTop: 10,
+  },
+  signupLink: {
+    color: '#00A3FF',
+    fontWeight: 'bold',
   },
 });
-
 
 export default LoginScreen;

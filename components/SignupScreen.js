@@ -10,9 +10,11 @@ import {
   ScrollView,
   Platform,
   Modal,
+  Image
 } from 'react-native';
 import { Auth } from 'aws-amplify';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { format } from 'date-fns';
 
 const SignupScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
@@ -20,17 +22,17 @@ const SignupScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [birthdate, setBirthdate] = useState('');
+  const [birthdate, setBirthdate] = useState(null);
   const [gender, setGender] = useState('');
   const [isGenderPickerVisible, setIsGenderPickerVisible] = useState(false);
-  const [isDatePickerVisible, setIsDatePickerVisible] = useState(false); // New state for date picker
+  const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
 
   const handleSignup = async () => {
     if (password !== confirmPassword) {
       Alert.alert('Error', 'Passwords do not match');
       return;
     }
-
+  
     try {
       await Auth.signUp({
         username,
@@ -38,25 +40,25 @@ const SignupScreen = ({ navigation }) => {
         attributes: {
           email,
           name,
-          birthdate, // The birthdate is now selected via the date picker
+          birthdate: birthdate ? format(birthdate, 'yyyy-MM-dd') : '',
           gender,
         },
       });
+      setIsNewUser(true); // Ensuring new user flow works correctly
       navigation.navigate('Verification', { username });
     } catch (error) {
       console.log('Error signing up:', error);
       Alert.alert('Error', error.message || 'An error occurred while signing up.');
     }
   };
+  
 
   const genderOptions = ['Male', 'Female', 'Other'];
 
-  // Handler for date selection
   const handleDateChange = (event, selectedDate) => {
-    setIsDatePickerVisible(false); // Close the picker
+    setIsDatePickerVisible(false);
     if (selectedDate) {
-      const formattedDate = selectedDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
-      setBirthdate(formattedDate);
+      setBirthdate(selectedDate);
     }
   };
 
@@ -70,6 +72,9 @@ const SignupScreen = ({ navigation }) => {
         contentContainerStyle={styles.scrollContainer}
         keyboardShouldPersistTaps="handled"
       >
+        {/* Logo */}
+        <Image source={require('../assets/logo.png')} style={styles.logo} />
+
         <Text style={styles.title}>Create Account</Text>
 
         <TextInput
@@ -118,34 +123,18 @@ const SignupScreen = ({ navigation }) => {
           onPress={() => setIsDatePickerVisible(true)}
         >
           <Text style={{ color: birthdate ? '#000' : '#A9A9A9' }}>
-            {birthdate || 'Select Birthdate'}
+            {birthdate ? format(birthdate, 'MMMM dd, yyyy') : 'Select Birthdate'}
           </Text>
         </TouchableOpacity>
 
-        {/* Date Picker Modal */}
-        <Modal
-          visible={isDatePickerVisible}
-          transparent
-          animationType="slide"
-          onRequestClose={() => setIsDatePickerVisible(false)}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <DateTimePicker
-                value={birthdate ? new Date(birthdate) : new Date()}
-                mode="date"
-                display="calendar"
-                onChange={handleDateChange}
-              />
-              <TouchableOpacity
-                style={styles.modalCancel}
-                onPress={() => setIsDatePickerVisible(false)}
-              >
-                <Text style={styles.modalCancelText}>Cancel</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
+        {isDatePickerVisible && (
+          <DateTimePicker
+            value={birthdate || new Date()}
+            mode="date"
+            display="default"
+            onChange={handleDateChange}
+          />
+        )}
 
         {/* Gender Picker */}
         <TouchableOpacity
@@ -194,9 +183,6 @@ const SignupScreen = ({ navigation }) => {
         <TouchableOpacity onPress={() => navigation.navigate('Login')}>
           <Text style={styles.loginText}>Already have an account? Log in</Text>
         </TouchableOpacity>
-
-        {/* Add some padding at the bottom so that the content can be scrolled above the keyboard */}
-        <View style={{ height: 60 }} />
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -205,7 +191,7 @@ const SignupScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFEDDB',
+    backgroundColor: '#FFFFFF',
   },
   scrollContainer: {
     flexGrow: 1,
@@ -213,10 +199,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
   },
+  logo: {
+    width: 100,
+    height: 100,
+    marginBottom: 20,
+  },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#2C3E50',
+    color: '#208F8F',
     marginBottom: 30,
   },
   input: {
@@ -233,11 +224,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   button: {
-    backgroundColor: '#F27A1A',
+    backgroundColor: '#5FD6D3',
     padding: 15,
     borderRadius: 10,
     width: '100%',
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
     elevation: 5,
   },
   buttonText: {
@@ -247,7 +242,7 @@ const styles = StyleSheet.create({
   },
   loginText: {
     marginTop: 20,
-    color: '#F27A1A',
+    color: '#00A3FF',
     fontSize: 16,
   },
   modalContainer: {

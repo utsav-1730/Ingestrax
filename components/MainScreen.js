@@ -1,303 +1,173 @@
-// MainScreen.js
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Platform, SafeAreaView, ScrollView, Image, Dimensions } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { FAB } from 'react-native-paper';
-
-const { width } = Dimensions.get('window');
+import { 
+  View, 
+  Text, 
+  TextInput, 
+  TouchableOpacity, 
+  ScrollView, 
+  StyleSheet,
+  SafeAreaView,
+  StatusBar,
+  Alert
+} from 'react-native';
+import { Ionicons, Feather } from '@expo/vector-icons';
+import { Auth } from 'aws-amplify';
 
 const MainScreen = ({ navigation }) => {
-  
-  // Navigation functions
-  const navigateToStoryCreation = () => {
-    navigation.navigate('StoryCreation'); // Ensure you have a StoryCreation component
+  const categories = ["Weight gain", "Exercises", "Yoga", "Salad"];
+
+  // Sample data for charts
+  const dailyStats = Array(7).fill(0).map(() => Math.random() * 100);
+  const smokingStats = Array(7).fill(0).map(() => Math.random() * 100);
+
+  const handleLogout = async () => {
+    try {
+      await Auth.signOut();
+      navigation.replace('Login');
+    } catch (error) {
+      Alert.alert('Error', 'Error signing out. Please try again.');
+    }
   };
-
-  const navigateToStoryViewer = (index) => {
-    navigation.navigate('StoryViewer', { stories: sampleStories, initialIndex: index });
-  };
-
-  const navigateToLikes = (postId) => {
-    navigation.navigate('Likes', { postId });
-  };
-
-  const navigateToComments = (postId) => {
-    navigation.navigate('Comments', { postId });
-  };
-
-  const navigateToShareSheet = (postId) => {
-    navigation.navigate('ShareSheet', { postId });
-  };
-
-  const navigateToCreatePost = () => {
-    navigation.navigate('CreatePost'); // Ensure you have a CreatePost component
-  };
-
-  // Sample data for stories and posts
-  const sampleStories = [
-    {
-      id: 1,
-      type: 'image',
-      contentUrl: 'https://via.placeholder.com/300x400',
-      user: {
-        username: 'Alex',
-        avatar: 'https://via.placeholder.com/100x100',
-      },
-    },
-    {
-      id: 2,
-      type: 'video',
-      contentUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
-      user: {
-        username: 'Maria',
-        avatar: 'https://via.placeholder.com/100x100',
-      },
-    },
-  ];
-
-  const samplePosts = [
-    {
-      id: 1,
-      username: 'Sarah',
-      userAvatar: 'https://via.placeholder.com/100x100',
-      imageUrl: 'https://via.placeholder.com/300x400',
-      likes: 234,
-      caption: 'Beautiful day! ✨',
-      timeAgo: '2h ago',
-    },
-    {
-      id: 2,
-      username: 'Mike',
-      userAvatar: 'https://via.placeholder.com/100x100',
-      imageUrl: 'https://via.placeholder.com/300x400',
-      likes: 156,
-      caption: 'Perfect evening for a walk 🌅',
-      timeAgo: '4h ago',
-    },
-  ];
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerText}>BEGLZ</Text>
-      </View>
-
-      {/* Main Content - Feed */}
-      <ScrollView style={styles.feedContainer}>
-        {/* Stories */}
-        <View style={styles.storiesContainer}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.storiesScroll}>
-            {/* Add Story Button */}
-            <TouchableOpacity style={styles.addStoryButton} onPress={navigateToStoryCreation}>
-              <View style={styles.addStoryIcon}>
-                <Ionicons name="add" size={24} color="#F27A1A" />
-              </View>
-              <Text style={styles.storyText}>Your Story</Text>
-            </TouchableOpacity>
-            {/* Sample Story Circles */}
-            {sampleStories.map((story, index) => (
-              <TouchableOpacity key={story.id} style={styles.storyCircle} onPress={() => navigateToStoryViewer(index)}>
-                <View style={styles.storyRing}>
-                  {story.type === 'video' ? (
-                    <Ionicons name="play-circle-outline" size={36} color="#fff" style={styles.storyOverlayIcon} />
-                  ) : null}
-                  <Image source={{ uri: story.user.avatar }} style={styles.storyImage} />
-                </View>
-                <Text style={styles.storyText}>{story.user.username}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
+      <StatusBar barStyle="dark-content" />
+      <ScrollView style={styles.scrollView} contentContainerStyle={{ paddingBottom: 20 }}>
+        
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity>
+            <View style={styles.menuButton}>
+              <View style={styles.menuLine} />
+              <View style={styles.menuLine} />
+              <View style={styles.menuLine} />
+            </View>
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Hii, Good noon</Text>
+          <TouchableOpacity>
+            <Ionicons name="notifications-outline" size={24} color="#000" />
+          </TouchableOpacity>
         </View>
 
-        {/* Posts */}
-        {samplePosts.map((post) => (
-          <View key={post.id} style={styles.postContainer}>
-            <View style={styles.postHeader}>
-              <TouchableOpacity onPress={() => navigation.navigate('Profile', { userId: post.id })}>
-                <Image source={{ uri: post.userAvatar }} style={styles.userAvatar} />
-              </TouchableOpacity>
-              <Text style={styles.username}>{post.username}</Text>
-              <Ionicons name="ellipsis-horizontal" size={20} color="#666" style={{ marginLeft: 'auto' }} />
-            </View>
-            <TouchableOpacity onPress={() => navigateToStoryViewer(0)}>
-              <Image source={{ uri: post.imageUrl }} style={styles.postImage} />
-            </TouchableOpacity>
-            <View style={styles.postActions}>
-              <View style={styles.leftActions}>
-                <TouchableOpacity onPress={() => {/* Like functionality placeholder */}}>
-                  <Ionicons name="heart-outline" size={24} color="#666" style={styles.actionIcon} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigateToComments(post.id)}>
-                  <Ionicons name="chatbubble-outline" size={22} color="#666" style={styles.actionIcon} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigateToShareSheet(post.id)}>
-                  <Ionicons name="paper-plane-outline" size={22} color="#666" style={styles.actionIcon} />
-                </TouchableOpacity>
-              </View>
-              <TouchableOpacity onPress={() => {/* Bookmark functionality placeholder */}}>
-                <Ionicons name="bookmark-outline" size={22} color="#666" />
-              </TouchableOpacity>
-            </View>
-            <TouchableOpacity onPress={() => navigateToLikes(post.id)}>
-              <Text style={styles.likes}>{post.likes} likes</Text>
-            </TouchableOpacity>
-            <Text style={styles.caption}>
-              <Text style={styles.username}>{post.username}</Text> {post.caption}
-            </Text>
-            <Text style={styles.timeAgo}>{post.timeAgo}</Text>
-          </View>
-        ))}
-      </ScrollView>
+        {/* Main Title */}
+        <Text style={styles.mainTitle}>Find out The best meal for diet.</Text>
 
-      {/* Floating Action Button */}
-      <FAB
-        style={styles.fab}
-        small={false}
-        icon="plus"
-        onPress={navigateToCreatePost}
-        color="#fff"
-      />
+        {/* Search Bar */}
+        <View style={styles.searchContainer}>
+          <Feather name="search" size={20} color="#666" style={styles.searchIcon} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search"
+            placeholderTextColor="#666"
+          />
+          <Feather name="maximize" size={20} color="#666" />
+        </View>
+
+        {/* Categories */}
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false}
+          style={styles.categoriesContainer}
+        >
+          {categories.map((category, index) => (
+            <TouchableOpacity
+              key={category}
+              style={[
+                styles.categoryButton,
+                index === 0 && styles.activeCategoryButton
+              ]}
+            >
+              <Text style={[
+                styles.categoryText,
+                index === 0 && styles.activeCategoryText
+              ]}>
+                {category}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+
+        {/* Daily Diet Stats - Now Navigates to DailyStatsScreen */}
+        <TouchableOpacity onPress={() => navigation.navigate('DailyStatsScreen')}>
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>Daily diet Stats</Text>
+            <View style={styles.statsContainer}>
+              <View>
+                <Text style={styles.statsLabel}>Daily calories</Text>
+                <Text style={styles.statsValue}>2070.99</Text>
+              </View>
+              <View>
+                <Text style={styles.statsLabel}>Calories to eat</Text>
+                <Text style={styles.statsValue}>400.90</Text>
+              </View>
+            </View>
+            <View style={styles.chartContainer}>
+              {dailyStats.map((height, index) => (
+                <View
+                  key={index}
+                  style={[styles.bar, { height: height * 1.2 }]}
+                />
+              ))}
+            </View>
+          </View>
+        </TouchableOpacity>
+
+        {/* Smoking Stats */}
+        <View style={styles.card}>
+          <View style={styles.cardHeader}>
+            <Text style={styles.cardTitle}>Smoking Stats</Text>
+            <TouchableOpacity>
+              <Feather name="plus" size={24} color="#06b6d4" />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.statsContainer}>
+            <View>
+              <Text style={styles.statsLabel}>Puffs Today</Text>
+              <Text style={styles.statsValue}>264</Text>
+            </View>
+            <View>
+              <Text style={styles.statsLabel}>Puffs till date</Text>
+              <Text style={styles.statsValue}>19,435</Text>
+            </View>
+          </View>
+          <View style={styles.chartContainer}>
+            {smokingStats.map((height, index) => (
+              <View
+                key={index}
+                style={[styles.bar, { height: height * 1.2 }]}
+              />
+            ))}
+          </View>
+        </View>
+        
+      </ScrollView>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingTop: Platform.OS === 'android' ? 40 : 10,
-    paddingBottom: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-    backgroundColor: '#fff',
-  },
-  headerText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#F27A1A',
-  },
-  feedContainer: {
-    flex: 1,
-  },
-  storiesContainer: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-    paddingVertical: 10,
-  },
-  storiesScroll: {
-    paddingHorizontal: 15,
-  },
-  addStoryButton: {
-    alignItems: 'center',
-    marginRight: 15,
-  },
-  addStoryIcon: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#F27A1A',
-    marginBottom: 5,
-  },
-  storyCircle: {
-    alignItems: 'center',
-    marginRight: 15,
-  },
-  storyRing: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    backgroundColor: '#F27A1A',
-    padding: 2,
-    marginBottom: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  storyOverlayIcon: {
-    position: 'absolute',
-  },
-  storyImage: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 34,
-    backgroundColor: '#ddd',
-  },
-  storyText: {
-    fontSize: 12,
-    color: '#666',
-  },
-  postContainer: {
-    marginBottom: 15,
-  },
-  postHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-  },
-  userAvatar: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#ddd',
-    marginRight: 10,
-  },
-  username: {
-    fontWeight: 'bold',
-    color: '#262626',
-  },
-  postImage: {
-    width: '100%',
-    height: 400,
-    backgroundColor: '#ddd',
-  },
-  postActions: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-  },
-  leftActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  actionIcon: {
-    marginRight: 15,
-  },
-  likes: {
-    fontWeight: 'bold',
-    paddingHorizontal: 15,
-    marginBottom: 5,
-    color: '#262626',
-  },
-  caption: {
-    paddingHorizontal: 15,
-    marginBottom: 5,
-    color: '#262626',
-  },
-  timeAgo: {
-    fontSize: 12,
-    color: '#666',
-    paddingHorizontal: 15,
-    marginBottom: 10,
-  },
-  fab: {
-    position: 'absolute',
-    margin: 16,
-    right: 0,
-    bottom: 20,
-    backgroundColor: '#F27A1A',
-  },
+  container: { flex: 1, backgroundColor: '#fff' },
+  scrollView: { flex: 1 },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16 },
+  menuButton: { padding: 8 },
+  menuLine: { width: 24, height: 2, backgroundColor: '#666', marginVertical: 2 },
+  headerTitle: { fontSize: 18, fontWeight: '500', color: "#208F8F" },
+  mainTitle: { fontSize: 24, fontWeight: 'bold', paddingHorizontal: 16, paddingVertical: 8, color: "#208F8F" },
+  searchContainer: { flexDirection: 'row', alignItems: 'center', margin: 16, paddingHorizontal: 16, paddingVertical: 12, backgroundColor: '#f5f5f5', borderRadius: 12 },
+  searchInput: { flex: 1, marginLeft: 8, fontSize: 16 },
+  categoriesContainer: { paddingHorizontal: 12, marginBottom: 16 , backgroundColor: '#e0f7fa' },
+  categoryButton: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, marginHorizontal: 4, backgroundColor: 'transparent' },
+  activeCategoryButton: { backgroundColor: '#06b6d4' },
+  categoryText: { color: '#666', fontSize: 16 },
+  activeCategoryText: { color: '#fff' },
+  card: { margin: 16, padding: 16, backgroundColor: '#e0f7fa', borderRadius: 16 },
+  cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  cardTitle: { fontSize: 18, fontWeight: '600', marginBottom: 12,color: "#208F8F" },
+  statsContainer: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16 , backgroundColor: '#e0f7fa'},
+  statsLabel: { color: '#666', fontSize: 14,},
+  statsValue: { color: '#06b6d4', fontSize: 18, fontWeight: 'bold' },
+  chartContainer: { height: 120, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' },
+  bar: { width: 16, backgroundColor: '#06b6d4', borderRadius: 8, opacity: 0.8 },
 });
 
 export default MainScreen;
